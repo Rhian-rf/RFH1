@@ -1,5 +1,3 @@
-Chat me ajuda criar um app com esse código no github
-
 import json
 import os
 
