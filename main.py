@@ -5,6 +5,7 @@ from kivy.app import App
 from kivy.animation import Animation
 from kivy.clock import Clock
 from kivy.core.clipboard import Clipboard
+from kivy.core.window import Window
 from kivy.metrics import dp
 from kivy.utils import get_color_from_hex
 from kivy.graphics import Color, Rectangle
@@ -51,14 +52,21 @@ class Botao(Button):
         self.background_down = ""
         self.background_color = get_color_from_hex(cor)
         self.color = get_color_from_hex(BRANCO)
-        self.font_size = dp(16)
+        self.font_size = dp(15)
         self.bold = True
+        self.halign = "center"
+        self.valign = "middle"
 
 
 class ControleVolumes(App):
 
     def build(self):
-        self.title = "Controle de Volumes"
+        self.title = "RFH1 - Controle de Volumes"
+
+        # Mantém a barra de status do Android visível.
+        Window.fullscreen = False
+        Window.clearcolor = get_color_from_hex(FUNDO)
+        Window.softinput_mode = "pan"
 
         self.lojas = []
         self.selecionada = None
@@ -68,10 +76,11 @@ class ControleVolumes(App):
 
         raiz = BoxLayout(
             orientation="vertical",
-            padding=dp(12),
-            spacing=dp(8)
+            padding=[dp(12), dp(12), dp(12), dp(12)],
+            spacing=dp(6)
         )
 
+        # Fundo do aplicativo.
         with raiz.canvas.before:
             Color(*get_color_from_hex(FUNDO))
             self.fundo = Rectangle(
@@ -87,48 +96,47 @@ class ControleVolumes(App):
         titulo = Label(
             text="[b]CONTROLE DE VOLUMES[/b]",
             markup=True,
-            font_size=dp(23),
+            font_size=dp(20),
             color=get_color_from_hex(BRANCO),
             size_hint_y=None,
-            height=dp(40)
+            height=dp(36)
         )
         raiz.add_widget(titulo)
 
         self.total_label = Label(
             text="TOTAL GERAL: 0",
-            font_size=dp(23),
+            font_size=dp(21),
             bold=True,
             color=get_color_from_hex(VERDE),
             size_hint_y=None,
-            height=dp(42)
+            height=dp(38)
         )
         raiz.add_widget(self.total_label)
 
         self.selecao_label = Label(
             text="Toque em uma loja para contar",
-            font_size=dp(14),
+            font_size=dp(13),
             color=get_color_from_hex(CINZA),
             size_hint_y=None,
-            height=dp(25)
+            height=dp(23)
         )
         raiz.add_widget(self.selecao_label)
 
         self.lista = GridLayout(
             cols=1,
-            spacing=dp(8),
-            padding=(0, dp(4)),
+            spacing=dp(6),
+            padding=(0, dp(3)),
             size_hint_y=None
         )
-
         self.lista.bind(
             minimum_height=self.lista.setter("height")
         )
 
         rolagem = ScrollView(
             do_scroll_x=False,
-            bar_width=dp(4)
+            bar_width=dp(4),
+            scroll_type=["content", "bars"]
         )
-
         rolagem.add_widget(self.lista)
         raiz.add_widget(rolagem)
 
@@ -136,25 +144,21 @@ class ControleVolumes(App):
             cols=2,
             spacing=dp(8),
             size_hint_y=None,
-            height=dp(50)
+            height=dp(46)
         )
 
         btn_diminuir = Botao(
             text="− DIMINUIR",
             cor=VERMELHO
         )
-        btn_diminuir.bind(
-            on_release=self.diminuir
-        )
+        btn_diminuir.bind(on_release=self.diminuir)
 
         btn_copiar = Botao(
             text="COPIAR CONTAGEM",
             cor=AZUL,
-            font_size=dp(14)
+            font_size=dp(13)
         )
-        btn_copiar.bind(
-            on_release=self.copiar
-        )
+        btn_copiar.bind(on_release=self.copiar)
 
         linha1.add_widget(btn_diminuir)
         linha1.add_widget(btn_copiar)
@@ -164,13 +168,13 @@ class ControleVolumes(App):
             cols=2,
             spacing=dp(8),
             size_hint_y=None,
-            height=dp(48)
+            height=dp(44)
         )
 
         btn_adicionar = Botao(
             text="+ NOVA LOJA",
             cor="#6655CC",
-            font_size=dp(14)
+            font_size=dp(13)
         )
         btn_adicionar.bind(
             on_release=self.popup_nova_loja
@@ -179,21 +183,19 @@ class ControleVolumes(App):
         btn_zerar = Botao(
             text="ZERAR TUDO",
             cor="#414B5E",
-            font_size=dp(14)
+            font_size=dp(13)
         )
-        btn_zerar.bind(
-            on_release=self.popup_zerar
-        )
+        btn_zerar.bind(on_release=self.popup_zerar)
 
         linha2.add_widget(btn_adicionar)
         linha2.add_widget(btn_zerar)
         raiz.add_widget(linha2)
 
         btn_apagar = Botao(
-            text="🗑 APAGAR LOJA",
+            text="APAGAR LOJA",
             cor=VERMELHO,
             size_hint_y=None,
-            height=dp(48)
+            height=dp(44)
         )
         btn_apagar.bind(
             on_release=self.popup_apagar_loja
@@ -201,7 +203,6 @@ class ControleVolumes(App):
         raiz.add_widget(btn_apagar)
 
         self.atualizar_lista()
-
         return raiz
 
     def atualizar_fundo(self, instancia, valor):
@@ -216,10 +217,7 @@ class ControleVolumes(App):
                 ) as arquivo:
                     dados = json.load(arquivo)
 
-                self.lojas = dados.get(
-                    "lojas",
-                    []
-                )
+                self.lojas = dados.get("lojas", [])
 
                 for loja in self.lojas:
                     loja.setdefault("referencia", "")
@@ -279,7 +277,8 @@ class ControleVolumes(App):
                 text=texto,
                 cor=CARTAO,
                 size_hint_y=None,
-                height=dp(68)
+                height=dp(60),
+                font_size=dp(14)
             )
 
             botao.bind(
@@ -301,7 +300,6 @@ class ControleVolumes(App):
         )
 
         Animation.cancel_all(botao)
-
         botao.background_color = get_color_from_hex(VERDE)
 
         animacao = Animation(
@@ -332,7 +330,6 @@ class ControleVolumes(App):
             loja.get("quantidade", 0)
             for loja in self.lojas
         )
-
         self.total_label.text = f"TOTAL GERAL: {total}"
 
     def diminuir(self, botao):
@@ -378,7 +375,6 @@ class ControleVolumes(App):
         linhas.append(f"TOTAL GERAL: {total}")
 
         Clipboard.copy("\n".join(linhas))
-
         self.aviso(
             "Copiado!",
             "A contagem foi copiada."
@@ -414,7 +410,6 @@ class ControleVolumes(App):
             size_hint_y=None,
             height=dp(48)
         )
-
         caixa.add_widget(salvar)
 
         popup = Popup(
@@ -486,7 +481,6 @@ class ControleVolumes(App):
             spacing=dp(6),
             size_hint_y=None
         )
-
         lista.bind(
             minimum_height=lista.setter("height")
         )
@@ -513,7 +507,6 @@ class ControleVolumes(App):
                 on_release=lambda instancia, item=loja:
                 selecionar(item)
             )
-
             lista.add_widget(botao_loja)
 
         rolagem.add_widget(lista)
@@ -525,7 +518,6 @@ class ControleVolumes(App):
             size_hint_y=None,
             height=dp(45)
         )
-
         fechar.bind(
             on_release=lambda instancia: popup.dismiss()
         )
@@ -563,15 +555,8 @@ class ControleVolumes(App):
             size_hint=(0.9, 0.35)
         )
 
-        sim = Botao(
-            text="APAGAR",
-            cor=VERMELHO
-        )
-
-        nao = Botao(
-            text="CANCELAR",
-            cor=AZUL
-        )
+        sim = Botao(text="APAGAR", cor=VERMELHO)
+        nao = Botao(text="CANCELAR", cor=AZUL)
 
         def apagar(instancia):
             if loja in self.lojas:
@@ -587,7 +572,6 @@ class ControleVolumes(App):
                 self.salvar_dados()
 
             popup.dismiss()
-
             self.aviso(
                 "Loja excluída",
                 f'A loja "{loja["nome"]}" foi apagada.'
@@ -600,7 +584,6 @@ class ControleVolumes(App):
 
         botoes.add_widget(sim)
         botoes.add_widget(nao)
-
         caixa.add_widget(botoes)
         popup.open()
 
@@ -634,7 +617,6 @@ class ControleVolumes(App):
             text="SIM, ZERAR",
             cor=VERMELHO
         )
-
         nao = Botao(
             text="CANCELAR",
             cor=AZUL
@@ -661,7 +643,6 @@ class ControleVolumes(App):
         botoes.add_widget(sim)
         botoes.add_widget(nao)
         caixa.add_widget(botoes)
-
         popup.open()
 
     def aviso(self, titulo, mensagem):
@@ -684,7 +665,6 @@ class ControleVolumes(App):
             size_hint_y=None,
             height=dp(45)
         )
-
         caixa.add_widget(fechar)
 
         popup = Popup(
@@ -696,7 +676,6 @@ class ControleVolumes(App):
         fechar.bind(
             on_release=lambda instancia: popup.dismiss()
         )
-
         popup.open()
 
 
