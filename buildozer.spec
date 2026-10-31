@@ -32,7 +32,7 @@ android.accept_sdk_license = True
 p4a.bootstrap = sdl2
 
 p4a.branch = develop
-p4a.commit = d2ee8c5
+p4a.commit = HEAD
 
 [buildozer]
 
