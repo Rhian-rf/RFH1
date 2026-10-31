@@ -13,7 +13,7 @@ source.include_exts = py,json,png,jpg,kv,atlas
 
 version = 1.0.0
 
-requirements = python3==3.12.10,kivy
+requirements = python3==3.14.2,kivy
 
 orientation = portrait
 
