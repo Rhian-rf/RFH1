@@ -33,6 +33,7 @@ p4a.bootstrap = sdl2
 
 p4a.branch = develop
 p4a.commit = HEAD
+presplash.filename = %(source.dir)s/presplash.png
 
 [buildozer]
 
