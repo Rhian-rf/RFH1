@@ -1,3 +1,4 @@
+
 import json
 import os
 
@@ -50,7 +51,6 @@ class Botao(Button):
 
     def __init__(self, cor=CARTAO, **kwargs):
         super().__init__(**kwargs)
-
         self.background_normal = ""
         self.background_down = ""
         self.background_color = get_color_from_hex(cor)
@@ -64,7 +64,6 @@ class Botao(Button):
 class ControleVolumes(App):
 
     def build(self):
-
         self.title = "RFH1 - Controle de Volumes"
 
         Window.fullscreen = False
@@ -104,7 +103,6 @@ class ControleVolumes(App):
             size_hint_y=None,
             height=dp(36)
         )
-
         raiz.add_widget(titulo)
 
         self.total_label = Label(
@@ -115,7 +113,6 @@ class ControleVolumes(App):
             size_hint_y=None,
             height=dp(38)
         )
-
         raiz.add_widget(self.total_label)
 
         self.selecao_label = Label(
@@ -125,7 +122,6 @@ class ControleVolumes(App):
             size_hint_y=None,
             height=dp(23)
         )
-
         raiz.add_widget(self.selecao_label)
 
         self.lista = GridLayout(
@@ -134,7 +130,6 @@ class ControleVolumes(App):
             padding=(0, dp(3)),
             size_hint_y=None
         )
-
         self.lista.bind(
             minimum_height=self.lista.setter("height")
         )
@@ -144,7 +139,6 @@ class ControleVolumes(App):
             bar_width=dp(4),
             scroll_type=["content", "bars"]
         )
-
         rolagem.add_widget(self.lista)
         raiz.add_widget(rolagem)
 
@@ -159,24 +153,17 @@ class ControleVolumes(App):
             text="− DIMINUIR",
             cor=VERMELHO
         )
-
-        btn_diminuir.bind(
-            on_release=self.diminuir
-        )
+        btn_diminuir.bind(on_release=self.diminuir)
 
         btn_copiar = Botao(
             text="COPIAR CONTAGEM",
             cor=AZUL,
             font_size=dp(13)
         )
-
-        btn_copiar.bind(
-            on_release=self.copiar
-        )
+        btn_copiar.bind(on_release=self.copiar)
 
         linha1.add_widget(btn_diminuir)
         linha1.add_widget(btn_copiar)
-
         raiz.add_widget(linha1)
 
         btn_bolsas = Botao(
@@ -186,11 +173,7 @@ class ControleVolumes(App):
             height=dp(44),
             font_size=dp(14)
         )
-
-        btn_bolsas.bind(
-            on_release=self.popup_bolsa
-        )
-
+        btn_bolsas.bind(on_release=self.popup_bolsa)
         raiz.add_widget(btn_bolsas)
 
         linha2 = GridLayout(
@@ -205,7 +188,6 @@ class ControleVolumes(App):
             cor="#6655CC",
             font_size=dp(13)
         )
-
         btn_adicionar.bind(
             on_release=self.popup_nova_loja
         )
@@ -215,14 +197,10 @@ class ControleVolumes(App):
             cor="#414B5E",
             font_size=dp(13)
         )
-
-        btn_zerar.bind(
-            on_release=self.popup_zerar
-        )
+        btn_zerar.bind(on_release=self.popup_zerar)
 
         linha2.add_widget(btn_adicionar)
         linha2.add_widget(btn_zerar)
-
         raiz.add_widget(linha2)
 
         btn_apagar = Botao(
@@ -231,47 +209,36 @@ class ControleVolumes(App):
             size_hint_y=None,
             height=dp(44)
         )
-
         btn_apagar.bind(
             on_release=self.popup_apagar_loja
         )
-
         raiz.add_widget(btn_apagar)
 
         self.atualizar_lista()
-
         return raiz
 
     # FUNDO
 
     def atualizar_fundo(self, instancia, valor):
-
         self.fundo.pos = instancia.pos
         self.fundo.size = instancia.size
 
     # CARREGAR DADOS
 
     def carregar_dados(self):
-
         self.bolsas = []
 
         if os.path.exists(ARQUIVO):
-
             try:
-
                 with open(
-                    ARQUIVO,
-                    "r",
-                    encoding="utf-8"
+                    ARQUIVO, "r", encoding="utf-8"
                 ) as arquivo:
-
                     dados = json.load(arquivo)
 
                 self.lojas = dados.get("lojas", [])
                 self.bolsas = dados.get("bolsas", [])
 
                 for loja in self.lojas:
-
                     loja.setdefault("referencia", "")
                     loja.setdefault("quantidade", 0)
 
@@ -279,9 +246,7 @@ class ControleVolumes(App):
                 numeros_usados = set()
 
                 for bolsa in self.bolsas:
-
                     try:
-
                         numero = int(bolsa.get("numero"))
                         destino = str(
                             bolsa.get("loja", "")
@@ -292,12 +257,10 @@ class ControleVolumes(App):
                             and numero not in numeros_usados
                             and destino
                         ):
-
                             bolsas_validas.append({
                                 "numero": numero,
                                 "loja": destino
                             })
-
                             numeros_usados.add(numero)
 
                     except (
@@ -311,7 +274,6 @@ class ControleVolumes(App):
                     bolsas_validas,
                     key=lambda item: item["numero"]
                 )
-
                 return
 
             except (
@@ -330,23 +292,17 @@ class ControleVolumes(App):
             }
             for loja in LOJAS_INICIAIS
         ]
-
         self.bolsas = []
 
     # SALVAR DADOS
 
     def salvar_dados(self):
-
         try:
-
             temporario = ARQUIVO + ".tmp"
 
             with open(
-                temporario,
-                "w",
-                encoding="utf-8"
+                temporario, "w", encoding="utf-8"
             ) as arquivo:
-
                 json.dump(
                     {
                         "lojas": self.lojas,
@@ -360,7 +316,6 @@ class ControleVolumes(App):
             os.replace(temporario, ARQUIVO)
 
         except OSError:
-
             self.aviso(
                 "Erro",
                 "Não foi possível salvar os dados."
@@ -369,26 +324,18 @@ class ControleVolumes(App):
     # ATUALIZAR LISTA
 
     def atualizar_lista(self):
-
         self.lista.clear_widgets()
         self.botoes = {}
 
         for loja in self.lojas:
-
             nome = loja["nome"]
             quantidade = loja.get("quantidade", 0)
             referencia = loja.get("referencia", "")
 
-            texto = (
-                f"{nome}   |   "
-                f"{quantidade} VOLUMES"
-            )
+            texto = f"{nome}   |   {quantidade} VOLUMES"
 
             if referencia:
-
-                texto += (
-                    f"\nReferência: {referencia}"
-                )
+                texto += f"\nReferência: {referencia}"
 
             botao = Botao(
                 text=texto,
@@ -408,14 +355,12 @@ class ControleVolumes(App):
 
         self.atualizar_total()
 
-    # ADICIONAR VOLUME
+    # ADICIONAR VOLUME AVULSO
 
     def adicionar(self, loja, botao):
-
         loja["quantidade"] = (
             loja.get("quantidade", 0) + 1
         )
-
         self.selecionada = loja
 
         self.selecao_label.text = (
@@ -423,7 +368,6 @@ class ControleVolumes(App):
         )
 
         Animation.cancel_all(botao)
-
         botao.background_color = get_color_from_hex(VERDE)
 
         animacao = Animation(
@@ -442,7 +386,6 @@ class ControleVolumes(App):
         )
 
         if loja.get("referencia"):
-
             botao.text += (
                 f'\nReferência: {loja["referencia"]}'
             )
@@ -453,40 +396,29 @@ class ControleVolumes(App):
     # TOTAL GERAL
 
     def atualizar_total(self):
-
         total_avulsos = sum(
             loja.get("quantidade", 0)
             for loja in self.lojas
         )
 
         total = total_avulsos + len(self.bolsas)
+        self.total_label.text = f"TOTAL GERAL: {total}"
 
-        self.total_label.text = (
-            f"TOTAL GERAL: {total}"
-        )
-
-    # DIMINUIR
+    # DIMINUIR VOLUME
 
     def diminuir(self, botao):
-
         if self.selecionada is None:
-
             self.aviso(
                 "Atenção",
                 "Primeiro toque na loja desejada."
             )
-
             return
 
         if self.selecionada.get("quantidade", 0) > 0:
-
             self.selecionada["quantidade"] -= 1
-
             self.atualizar_lista()
             self.salvar_dados()
-
         else:
-
             self.aviso(
                 "Atenção",
                 "Essa loja já está zerada."
@@ -495,14 +427,11 @@ class ControleVolumes(App):
     # REGISTRAR BOLSA
 
     def popup_bolsa(self, botao):
-
         if not self.lojas:
-
             self.aviso(
                 "Atenção",
                 "Cadastre pelo menos uma loja antes de registrar bolsas."
             )
-
             return
 
         caixa = BoxLayout(
@@ -528,7 +457,6 @@ class ControleVolumes(App):
             height=dp(48),
             font_size=dp(18)
         )
-
         caixa.add_widget(numero)
 
         caixa.add_widget(
@@ -543,13 +471,11 @@ class ControleVolumes(App):
         destino = Spinner(
             text="Escolha uma loja",
             values=tuple(
-                loja["nome"]
-                for loja in self.lojas
+                loja["nome"] for loja in self.lojas
             ),
             size_hint_y=None,
             height=dp(48)
         )
-
         caixa.add_widget(destino)
 
         botoes = GridLayout(
@@ -569,55 +495,45 @@ class ControleVolumes(App):
             text="REGISTRAR",
             cor=VERDE
         )
-
         cancelar = Botao(
             text="CANCELAR",
             cor=AZUL
         )
 
         def registrar(instancia):
-
             texto_numero = numero.text.strip()
 
             if not texto_numero:
-
                 self.aviso(
                     "Atenção",
                     "Digite o número da bolsa."
                 )
-
                 return
 
             numero_bolsa = int(texto_numero)
 
             if not 1 <= numero_bolsa <= 110:
-
                 self.aviso(
                     "Número inválido",
                     "A bolsa deve ter um número entre 1 e 110."
                 )
-
                 return
 
             if any(
                 int(item["numero"]) == numero_bolsa
                 for item in self.bolsas
             ):
-
                 self.aviso(
                     "Bolsa já cadastrada",
                     f"A bolsa {numero_bolsa} já foi registrada."
                 )
-
                 return
 
             if destino.text == "Escolha uma loja":
-
                 self.aviso(
                     "Atenção",
                     "Selecione a loja de destino."
                 )
-
                 return
 
             self.bolsas.append({
@@ -631,7 +547,6 @@ class ControleVolumes(App):
 
             self.atualizar_total()
             self.salvar_dados()
-
             popup.dismiss()
 
             self.aviso(
@@ -639,41 +554,28 @@ class ControleVolumes(App):
                 f"Bolsa {numero_bolsa} vinculada à loja {destino.text}."
             )
 
-        salvar.bind(
-            on_release=registrar
-        )
-
+        salvar.bind(on_release=registrar)
         cancelar.bind(
             on_release=lambda instancia: popup.dismiss()
         )
 
         botoes.add_widget(salvar)
         botoes.add_widget(cancelar)
-
         caixa.add_widget(botoes)
-
         popup.open()
 
     # COPIAR CONTAGEM
 
     def copiar(self, botao):
-
-        linhas = [
-            "VOLUMES AVULSOS"
-        ]
+        linhas = ["VOLUMES AVULSOS"]
 
         for loja in self.lojas:
-
             quantidade = loja.get("quantidade", 0)
 
             if quantidade > 0:
-
-                linha = (
-                    f'{loja["nome"]}: {quantidade}'
-                )
+                linha = f'{loja["nome"]}: {quantidade}'
 
                 if loja.get("referencia"):
-
                     linha += (
                         f' | Ref.: {loja["referencia"]}'
                     )
@@ -684,7 +586,6 @@ class ControleVolumes(App):
             loja.get("quantidade", 0) > 0
             for loja in self.lojas
         ):
-
             linhas.append(
                 "Nenhum volume avulso registrado."
             )
@@ -693,21 +594,15 @@ class ControleVolumes(App):
         linhas.append("BOLSAS")
 
         if self.bolsas:
-
             for bolsa in sorted(
                 self.bolsas,
                 key=lambda item: int(item["numero"])
             ):
-
                 linhas.append(
                     f'Bolsa {bolsa["numero"]} → {bolsa["loja"]}'
                 )
-
         else:
-
-            linhas.append(
-                "Nenhuma bolsa registrada."
-            )
+            linhas.append("Nenhuma bolsa registrada.")
 
         total_avulsos = sum(
             loja.get("quantidade", 0)
@@ -717,13 +612,9 @@ class ControleVolumes(App):
         total = total_avulsos + len(self.bolsas)
 
         linhas.append("")
-        linhas.append(
-            f"TOTAL GERAL: {total}"
-        )
+        linhas.append(f"TOTAL GERAL: {total}")
 
-        Clipboard.copy(
-            "\n".join(linhas)
-        )
+        Clipboard.copy("\n".join(linhas))
 
         self.aviso(
             "Copiado!",
@@ -733,7 +624,6 @@ class ControleVolumes(App):
     # NOVA LOJA
 
     def popup_nova_loja(self, botao):
-
         caixa = BoxLayout(
             orientation="vertical",
             padding=dp(12),
@@ -763,7 +653,6 @@ class ControleVolumes(App):
             size_hint_y=None,
             height=dp(48)
         )
-
         caixa.add_widget(salvar)
 
         popup = Popup(
@@ -773,29 +662,24 @@ class ControleVolumes(App):
         )
 
         def cadastrar(instancia):
-
             nome_loja = nome.text.strip()
             ref = referencia.text.strip()
 
             if not nome_loja:
-
                 self.aviso(
                     "Atenção",
                     "Digite o nome da loja."
                 )
-
                 return
 
             if any(
                 item["nome"].casefold() == nome_loja.casefold()
                 for item in self.lojas
             ):
-
                 self.aviso(
                     "Atenção",
                     "Essa loja já está cadastrada."
                 )
-
                 return
 
             self.lojas.append({
@@ -806,26 +690,19 @@ class ControleVolumes(App):
 
             self.atualizar_lista()
             self.salvar_dados()
-
             popup.dismiss()
 
-        salvar.bind(
-            on_release=cadastrar
-        )
-
+        salvar.bind(on_release=cadastrar)
         popup.open()
 
     # APAGAR LOJA
 
     def popup_apagar_loja(self, botao):
-
         if not self.lojas:
-
             self.aviso(
                 "Atenção",
                 "Não existem lojas cadastradas."
             )
-
             return
 
         caixa = BoxLayout(
@@ -849,7 +726,6 @@ class ControleVolumes(App):
             spacing=dp(6),
             size_hint_y=None
         )
-
         lista.bind(
             minimum_height=lista.setter("height")
         )
@@ -861,13 +737,10 @@ class ControleVolumes(App):
         )
 
         def selecionar(loja):
-
             popup.dismiss()
-
             self.confirmar_apagar_loja(loja)
 
         for loja in self.lojas:
-
             botao_loja = Botao(
                 text=loja["nome"],
                 cor=VERMELHO,
@@ -879,7 +752,6 @@ class ControleVolumes(App):
                 on_release=lambda instancia, item=loja:
                 selecionar(item)
             )
-
             lista.add_widget(botao_loja)
 
         rolagem.add_widget(lista)
@@ -891,19 +763,16 @@ class ControleVolumes(App):
             size_hint_y=None,
             height=dp(45)
         )
-
         fechar.bind(
             on_release=lambda instancia: popup.dismiss()
         )
 
         caixa.add_widget(fechar)
-
         popup.open()
 
-    # CONFIRMAR EXCLUSÃO
+    # CONFIRMAR EXCLUSÃO DA LOJA
 
     def confirmar_apagar_loja(self, loja):
-
         caixa = BoxLayout(
             orientation="vertical",
             padding=dp(12),
@@ -911,13 +780,10 @@ class ControleVolumes(App):
         )
 
         caixa.add_widget(
-            Label(
-                text=(
-                    f'Deseja apagar a loja "{loja["nome"]}"?\n'
-                    "A contagem avulsa será excluída. "
-                    "As bolsas registradas continuarão no relatório."
-                ),
-                halign="center"
+            self.criar_mensagem(
+                f'Deseja apagar a loja "{loja["nome"]}"?\n'
+                "A contagem avulsa será excluída. "
+                "As bolsas registradas continuarão no relatório."
             )
         )
 
@@ -934,26 +800,15 @@ class ControleVolumes(App):
             size_hint=(0.9, 0.4)
         )
 
-        sim = Botao(
-            text="APAGAR",
-            cor=VERMELHO
-        )
-
-        nao = Botao(
-            text="CANCELAR",
-            cor=AZUL
-        )
+        sim = Botao(text="APAGAR", cor=VERMELHO)
+        nao = Botao(text="CANCELAR", cor=AZUL)
 
         def apagar(instancia):
-
             if loja in self.lojas:
-
                 self.lojas.remove(loja)
 
                 if self.selecionada is loja:
-
                     self.selecionada = None
-
                     self.selecao_label.text = (
                         "Toque em uma loja para contar"
                     )
@@ -968,35 +823,29 @@ class ControleVolumes(App):
                 f'A loja "{loja["nome"]}" foi apagada.'
             )
 
-        sim.bind(
-            on_release=apagar
-        )
-
+        sim.bind(on_release=apagar)
         nao.bind(
             on_release=lambda instancia: popup.dismiss()
         )
 
         botoes.add_widget(sim)
         botoes.add_widget(nao)
-
         caixa.add_widget(botoes)
-
         popup.open()
 
     # ZERAR TUDO
 
     def popup_zerar(self, botao):
-
         caixa = BoxLayout(
             orientation="vertical",
-            padding=dp(12),
+            padding=dp(16),
             spacing=dp(12)
         )
 
         caixa.add_widget(
-            Label(
-                text="Deseja zerar todas as contagens e apagar todas as bolsas?",
-                halign="center"
+            self.criar_mensagem(
+                "Deseja zerar todas as contagens "
+                "e apagar todas as bolsas?"
             )
         )
 
@@ -1010,27 +859,24 @@ class ControleVolumes(App):
         popup = Popup(
             title="Confirmar",
             content=caixa,
-            size_hint=(0.85, 0.34)
+            size_hint=(0.85, None),
+            height=dp(230)
         )
 
         sim = Botao(
             text="SIM, ZERAR",
             cor=VERMELHO
         )
-
         nao = Botao(
             text="CANCELAR",
             cor=AZUL
         )
 
         def confirmar(instancia):
-
             for loja in self.lojas:
-
                 loja["quantidade"] = 0
 
             self.bolsas = []
-
             self.selecionada = None
 
             self.selecao_label.text = (
@@ -1039,53 +885,54 @@ class ControleVolumes(App):
 
             self.atualizar_lista()
             self.salvar_dados()
-
             popup.dismiss()
 
-        sim.bind(
-            on_release=confirmar
-        )
-
+        sim.bind(on_release=confirmar)
         nao.bind(
             on_release=lambda instancia: popup.dismiss()
         )
 
         botoes.add_widget(sim)
         botoes.add_widget(nao)
-
         caixa.add_widget(botoes)
-
         popup.open()
 
-    # AVISOS - CORRIGIDO
+    # MENSAGEM COM ALTURA AUTOMÁTICA
+
+    def criar_mensagem(self, mensagem):
+        texto = Label(
+            text=mensagem,
+            halign="center",
+            valign="middle",
+            color=get_color_from_hex(BRANCO),
+            font_size=dp(15),
+            size_hint=(1, None)
+        )
+
+        def atualizar_largura(instancia, largura):
+            instancia.text_size = (
+                max(1, largura - dp(8)),
+                None
+            )
+
+        def atualizar_altura(instancia, tamanho):
+            instancia.height = tamanho[1] + dp(16)
+
+        texto.bind(width=atualizar_largura)
+        texto.bind(texture_size=atualizar_altura)
+
+        return texto
+
+    # AVISOS CORRIGIDOS
 
     def aviso(self, titulo, mensagem):
-
         caixa = BoxLayout(
             orientation="vertical",
             padding=[dp(16), dp(14), dp(16), dp(14)],
             spacing=dp(12)
         )
 
-        texto = Label(
-            text=mensagem,
-            halign="center",
-            valign="middle",
-            color=get_color_from_hex(BRANCO),
-            font_size=dp(16),
-            size_hint=(1, 1)
-        )
-
-        # Faz o texto respeitar a largura disponível.
-        texto.bind(
-            width=lambda instancia, largura:
-            setattr(
-                instancia,
-                "text_size",
-                (largura, None)
-            )
-        )
-
+        texto = self.criar_mensagem(mensagem)
         caixa.add_widget(texto)
 
         fechar = Botao(
@@ -1094,23 +941,23 @@ class ControleVolumes(App):
             size_hint_y=None,
             height=dp(50)
         )
-
         caixa.add_widget(fechar)
 
         popup = Popup(
             title=titulo,
             content=caixa,
-            size_hint=(0.85, 0.32),
+            size_hint=(0.85, None),
+            height=dp(190),
             auto_dismiss=False
         )
 
-        fechar.bind(
-            on_release=lambda instancia: popup.dismiss()
-        )
+        def fechar_popup(instancia):
+            popup.dismiss()
+
+        fechar.bind(on_release=fechar_popup)
 
         popup.open()
 
 
 if __name__ == "__main__":
-
     ControleVolumes().run()
