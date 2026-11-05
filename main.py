@@ -148,8 +148,6 @@ class ControleVolumes(App):
         rolagem.add_widget(self.lista)
         raiz.add_widget(rolagem)
 
-        # LINHA 1
-
         linha1 = GridLayout(
             cols=2,
             spacing=dp(8),
@@ -181,8 +179,6 @@ class ControleVolumes(App):
 
         raiz.add_widget(linha1)
 
-        # CONTROLE DE BOLSAS
-
         btn_bolsas = Botao(
             text="CONTROLE DE BOLSAS",
             cor="#167D68",
@@ -196,8 +192,6 @@ class ControleVolumes(App):
         )
 
         raiz.add_widget(btn_bolsas)
-
-        # LINHA 2
 
         linha2 = GridLayout(
             cols=2,
@@ -410,12 +404,11 @@ class ControleVolumes(App):
             )
 
             self.botoes[nome] = botao
-
             self.lista.add_widget(botao)
 
         self.atualizar_total()
 
-    # ADICIONAR VOLUME AVULSO
+    # ADICIONAR VOLUME
 
     def adicionar(self, loja, botao):
 
@@ -472,7 +465,7 @@ class ControleVolumes(App):
             f"TOTAL GERAL: {total}"
         )
 
-    # DIMINUIR VOLUME
+    # DIMINUIR
 
     def diminuir(self, botao):
 
@@ -499,7 +492,7 @@ class ControleVolumes(App):
                 "Essa loja já está zerada."
             )
 
-    # CONTROLE DE BOLSAS
+    # REGISTRAR BOLSA
 
     def popup_bolsa(self, botao):
 
@@ -907,7 +900,7 @@ class ControleVolumes(App):
 
         popup.open()
 
-    # CONFIRMAR EXCLUSÃO DA LOJA
+    # CONFIRMAR EXCLUSÃO
 
     def confirmar_apagar_loja(self, loja):
 
@@ -1002,7 +995,8 @@ class ControleVolumes(App):
 
         caixa.add_widget(
             Label(
-                text="Deseja zerar todas as contagens e apagar todas as bolsas?"
+                text="Deseja zerar todas as contagens e apagar todas as bolsas?",
+                halign="center"
             )
         )
 
@@ -1063,28 +1057,42 @@ class ControleVolumes(App):
 
         popup.open()
 
-    # AVISOS
+    # AVISOS - CORRIGIDO
 
     def aviso(self, titulo, mensagem):
 
         caixa = BoxLayout(
             orientation="vertical",
-            padding=dp(12),
-            spacing=dp(10)
+            padding=[dp(16), dp(14), dp(16), dp(14)],
+            spacing=dp(12)
         )
 
-        caixa.add_widget(
-            Label(
-                text=mensagem,
-                halign="center"
+        texto = Label(
+            text=mensagem,
+            halign="center",
+            valign="middle",
+            color=get_color_from_hex(BRANCO),
+            font_size=dp(16),
+            size_hint=(1, 1)
+        )
+
+        # Faz o texto respeitar a largura disponível.
+        texto.bind(
+            width=lambda instancia, largura:
+            setattr(
+                instancia,
+                "text_size",
+                (largura, None)
             )
         )
+
+        caixa.add_widget(texto)
 
         fechar = Botao(
             text="OK",
             cor=AZUL,
             size_hint_y=None,
-            height=dp(45)
+            height=dp(50)
         )
 
         caixa.add_widget(fechar)
@@ -1092,7 +1100,8 @@ class ControleVolumes(App):
         popup = Popup(
             title=titulo,
             content=caixa,
-            size_hint=(0.85, 0.3)
+            size_hint=(0.85, 0.32),
+            auto_dismiss=False
         )
 
         fechar.bind(
